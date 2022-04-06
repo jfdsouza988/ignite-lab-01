@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,5 +10,39 @@ datasource db {
 model Student {
   id String @id @default(uuid())
 
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
   @@map("student")
+}
+
+model Course {
+  id String @id @default(uuid())
+
+  title      String
+  slug       String       @unique
+  enrolledOn Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("course")
+}
+
+model Enrollment {
+  id String @id @default(uuid())
+
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId String
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  canceledAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now()) @updatedAt
+
+  @@map("enrollment")
 }
